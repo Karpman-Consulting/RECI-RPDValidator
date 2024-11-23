@@ -8,6 +8,8 @@ This project is an adaptation of a feature included in the Ruleset Checking Tool
 We have made modifications including explicit support of multiple versions of the schema, and enhance the validation error messages.
 All credit for the original work goes to PNNL. For more details, visit https://github.com/pnnl/ruleset-checking-tool.
 
+This project uses jsonpath-ng, which is licensed under the Apache License 2.0.
+
 ---
 
 ## Features
@@ -22,15 +24,12 @@ All credit for the original work goes to PNNL. For more details, visit https://g
 
 **Requirements:**
 
-- Python 3.7 or newer.
+- Python 3
+- jsonpath-ng
+- jsonschema
+- referencing
 
-The utility is not yet available on PyPI. To install it, clone the repository and install it locally:
-
-```bash
-pip install git+https://github.com/Karpman-Consulting/RECI-RPDValidator.git
-```
-
-Once the utility is made available on [PyPI](https://pypi.org/project/rpdvalidator/). It will be installable using the following command:
+To install, you can use the command:
 
 ```bash
 pip install rpdvalidator
@@ -48,14 +47,37 @@ RECI-RPDValidator provides a straightforward command-line interface for validati
 validateRPD rpd-filename.json
 ```
 
-### Specifying a Schema Version
-
+**Specifying a Schema Version**  
 To validate an RPD file against a specific schema version, use the `--version` flag:
 
 ```bash
 validateRPD rpd-filename.json --version 0.2.0
 ```
 If no version is specified, the utility defaults to schema version `0.1.0`.
+
+
+### Python
+
+You can also use the utility as a Python module. Here's an example of how to validate an RPD file:
+
+```python
+from rpdvalidator import validate_rpd
+
+rpd_file = "path/to/rpd-filename.json"
+validate_rpd(rpd_file)
+```
+
+**Specifying a Schema Version**  
+To validate an RPD file against a specific schema version, provide the version as an argument:
+
+```python
+from rpdvalidator import validate_rpd
+
+rpd_file = "path/to/rpd-filename.json"
+schema_version = "0.2.0"
+validate_rpd(rpd_file, schema_version)
+```
+
 
 ---
 

@@ -8,7 +8,7 @@ from rpdvalidator.jsonpath_utils import *
 
 def schema_validate(rpd: dict, schema_version: str = "0.1.0"):
     """
-    Validates an RPD against the
+    Validates an RPD against the specified version of the schema.
     Parameters
     ----------
     rpd : dict
@@ -86,8 +86,10 @@ def check_fluid_loop_association(rpd: dict) -> list:
     ----------
     rpd
 
-    Returns list of mismatched fluid loop ids
+    Returns
     -------
+    list
+        A list of mismatched fluid loop ids
 
     """
     mismatch_list = []
@@ -137,8 +139,10 @@ def check_zone_association(rpd: dict) -> list:
     ----------
     rpd
 
-    Returns list of mismatched zone ids
+    Returns
     -------
+    list
+        A list of mismatched zone ids
 
     """
     mismatch_list = []
@@ -181,8 +185,10 @@ def check_schedule_association(rpd: dict) -> list:
     ----------
     rpd
 
-    Returns list of mismatched schedule ids
+    Returns
     -------
+    list
+        A list of mismatched schedule ids
 
     """
     mismatch_list = []
@@ -232,8 +238,10 @@ def check_fluid_loop_or_piping_association(rpd: dict) -> list:
     ----------
     rpd
 
-    Returns list of mismatched fluid loop or piping ids
+    Returns
     -------
+    list
+        A list of mismatched fluid loop or piping ids
 
     """
     mismatch_list = []
@@ -258,15 +266,17 @@ def check_fluid_loop_or_piping_association(rpd: dict) -> list:
     return mismatch_list
 
 
-def check_service_water_heating_association(rpd):
+def check_service_water_heating_association(rpd: dict) -> list:
     """
     Check the association between service water heating distribution systems and the various objects that reference them.
     Parameters
     ----------
     rpd
 
-    Returns list of mismatched service water heating distribution system ids
+    Returns
     -------
+    list
+        A list of mismatched service water heating ids
 
     """
     mismatch_list = []
@@ -299,8 +309,10 @@ def check_hvac_association(rpd: dict) -> list:
     ----------
     rpd
 
-    Returns list of mismatched hvac ids
+    Returns
     -------
+    list
+        A list of mismatched HVAC ids
 
     """
     mismatch_list = []
@@ -319,7 +331,7 @@ def check_hvac_association(rpd: dict) -> list:
     return mismatch_list
 
 
-def check_unique_ids_in_ruleset_model_descriptions(rpd):
+def check_unique_ids_in_ruleset_model_descriptions(rpd: dict) -> str:
     """Checks that the ids within each group inside a
     RuleSetModelInstance are unique
 
@@ -339,6 +351,7 @@ def check_unique_ids_in_ruleset_model_descriptions(rpd):
     str
         An error message listing any paths that do not have unique ids. The empty string
         indicates that all appropriate ids are unique.
+
     """
     # The schema does not require the ruleset_model_descriptions field, default to []
     ruleset_model_descriptions = rpd.get("ruleset_model_descriptions", [])
@@ -361,8 +374,20 @@ def check_unique_ids_in_ruleset_model_descriptions(rpd):
     return error_msg
 
 
-def get_schema_file_paths(schema_version):
-    """Get the paths to the schema files for the given schema version"""
+def get_schema_file_paths(schema_version: str) -> dict:
+    """
+    Get the paths to the schema files for the given schema version
+    Parameters
+    ----------
+    schema_version : str
+        The version of the schema
+
+    Returns
+    -------
+    dict
+        A dictionary containing the paths to the schema files
+
+    """
     file_dir = os.path.dirname(__file__)
     schema_paths = {
         "SCHEMA_PATH": os.path.join(file_dir, f"schema_versions/{schema_version}/ASHRAE229.schema.json"),
@@ -375,8 +400,21 @@ def get_schema_file_paths(schema_version):
     return schema_paths
 
 
-def validate_references(rpd):
-    """Verifies that objects in the RPD file exist if they are provided as values to Reference data types"""
+def validate_references(rpd: dict) -> dict:
+    """
+    Verifies that objects in the RPD file exist if they are provided as values to Reference data types
+    Parameters
+    ----------
+    rpd : dict
+        The RPD to validate
+
+    Returns
+    -------
+    dict
+        A dictionary containing the validation result. The "passed" key is a boolean indicating whether the validation
+        passed. If the validation failed, the "error" key contains a list of error messages.
+
+    """
     error = []
     unique_id_error = check_unique_ids_in_ruleset_model_descriptions(rpd)
     passed = not unique_id_error
@@ -428,29 +466,3 @@ def validate_references(rpd):
         )
 
     return {"passed": passed, "error": error if error else None}
-
-
-if __name__ == "__main__":
-    rpd_file_path = ""
-    if not rpd_file_path:
-        print("Error: RPD file path not provided.")
-        exit(1)
-
-    with open(rpd_file_path) as rpd_file:
-        try:
-            rpd_main = json.load(rpd_file)
-        except json.JSONDecodeError as e:
-            print(f"Error: Failed to parse RMD file '{rpd_file_path}': {e}")
-            exit(1)
-
-    result = schema_validate(rpd_main)
-
-    if result["passed"]:
-        print("Validation: PASS.")
-        exit(0)
-
-    else:
-        print("Validation: FAIL. Errors:")
-        for err in result['errors']:
-            print(f"- {err}")
-        exit(1)

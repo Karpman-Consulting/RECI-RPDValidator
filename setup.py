@@ -2,9 +2,9 @@ from setuptools import setup, find_packages
 
 setup(
     name='rpdvalidator',
-    version="1.0",
+    version="1.0.1",
     packages=find_packages(),
-    install_requires=['jsonpath2', 'jsonschema'],
+    install_requires=['jsonpath-ng', 'jsonschema', 'referencing'],
     url='https://github.com/Karpman-Consulting/RECI-RPDValidator',
     author='Jackson Jarboe',
     author_email='jackson@karpmanconsulting.net',
@@ -19,8 +19,14 @@ setup(
     include_package_data=True,
     entry_points={
         'console_scripts': [
-            'validateRPD=rpdvalidator.main:run',
+            'validateRPD=rpdvalidator.main:cli',
         ],
     },
     python_requires='>=3.7',
+    license='MIT',
+    classifiers=[
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
+    ]
 )

@@ -6,10 +6,11 @@ name = "pypi"
 [packages]
 jsonschema = "*"
 referencing = "*"
-rpdvalidator = {editable = true, path = "."}
 jsonpath-ng = "*"
+rpdvalidator = {path = "./dist/rpdvalidator-1.0.1-py3-none-any.whl"}
 
 [dev-packages]
+twine = "*"
 
 [requires]
 python_version = "3.11"
