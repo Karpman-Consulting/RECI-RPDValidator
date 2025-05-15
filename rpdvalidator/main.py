@@ -45,6 +45,7 @@ def cli():
     parser = argparse.ArgumentParser(description="Validate an RPD file against a schema.")
     parser.add_argument("rpd_file", type=str, help="Path to the RPD file to validate.")
     parser.add_argument("--version", type=str, default="0.1.0", help="Schema version to use (default: 0.1.0).")
+    parser.add_argument("--full", type=bool, default=False, help="Print full error messages (default: False).")
 
     args = parser.parse_args()
 
@@ -60,7 +61,7 @@ def cli():
             print(f"Error: Failed to parse RPD file '{args.rpd_file}': {e}")
             exit(1)
 
-    result = schema_validate(rpd, schema_version=args.version)
+    result = schema_validate(rpd, schema_version=args.version, full_errors=args.full)
 
     if result["passed"]:
         print("Validation: PASS.")

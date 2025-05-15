@@ -6,7 +6,7 @@ from referencing.jsonschema import DRAFT7
 from rpdvalidator.jsonpath_utils import *
 
 
-def schema_validate(rpd: dict, schema_version: str = "0.1.0"):
+def schema_validate(rpd: dict, schema_version: str = "0.1.0", full_errors: bool = False) -> dict:
     """
     Validates an RPD against the specified version of the schema.
     Parameters
@@ -15,6 +15,8 @@ def schema_validate(rpd: dict, schema_version: str = "0.1.0"):
         The RPD to validate
     schema_version : str
         The version of the schema to validate against
+    full_errors : bool
+        Whether to print full error messages
 
     Returns
     -------
@@ -64,11 +66,17 @@ def schema_validate(rpd: dict, schema_version: str = "0.1.0"):
 
                 # Construct the error message
                 parent_id = parent_id[0] if parent_id else parent_id
-                truncated_message = (error.message[:20] + '..........' + error.message[-130:]) if len(error.message) > 160 else error.message
-                error_message = (
+                if not full_errors:
+                    truncated_message = (error.message[:20] + '..........' + error.message[-130:]) if len(error.message) > 160 else error.message
+                    error_message = (
                         f"{truncated_message}. Path: {error_path}." +
                         (f" Parent ID: {parent_id}" if parent_id else "")
-                )
+                    )
+                else:
+                    error_message = (
+                        f"{error.message}. Path: {error_path}." +
+                        (f" Parent ID: {parent_id}" if parent_id else "")
+                    )
                 error_details.append(error_message)
 
             return {"passed": False, "errors": error_details}
